@@ -1,0 +1,88 @@
+--Uncomment Drop tables if tables already exist
+--DROP TABLE COURSES;
+--DROP TABLE ADMINISTRATION;
+--DROP TABLE STUDENT;
+--DROP TABLE TUTOR;
+--DROP TABLE WEBSITE;
+--DROP TABLE MAP;
+
+--Course Table
+CREATE TABLE Course
+ (
+	courseID INT,
+	courseSize INT,
+	startDate DATE,
+	endDate DATE,
+	classTime TIME,
+	fees INT,
+	location VARCHAR(100),
+	PRIMARY KEY(courseID)
+	CONSTRAINT VAL CHECK (endDate > startDate),
+	FOREIGN KEY (tutorID_Tutor) REFERENCES Tutor(tutorID) ON DELETE SET NULL
+	FOREIGN KEY (studentID_Student) REFERENCES Student(studentID) ON DELETE SET NULL
+	FOREIGN KEY (locationID_Map) REFERENCES Map(locationID) ON DELETE SET NULL
+);
+
+-- Tutor Table
+CREATE TABLE Tutor
+ (
+	tutorID INT,
+	fName VARCHAR(100),
+	lName VARCHAR(100),
+	streetName VARCHAR(100),
+	city VARCHAR(100),
+	ZIP INT(5),
+	salary INT,
+	phoneNo VARCHAR CHECK (LENGTH(phoneNo) < 20),
+	PRIMARY KEY(tutorID)
+);
+
+-- Student Table
+CREATE TABLE Student
+ (
+	studentID INT,
+	fName VARCHAR(100),
+	lName VARCHAR(100),
+	streetName VARCHAR(100),
+	city VARCHAR(100),
+	ZIP INT(5),
+	phoneNo VARCHAR CHECK (LENGTH(phoneNo) < 20),
+	PRIMARY KEY(studentID)
+	FOREIGN KEY (fees_Courses) REFERENCES Courses(fees) ON DELETE SET NULL
+);
+
+--Administration Table
+CREATE TABLE Administration
+ (
+	employeeID INT,
+	streetName VARCHAR(100),
+	city VARCHAR(100),
+	ZIP INT(5),
+	phoneNo VARCHAR CHECK (LENGTH(phoneNo) < 20),
+	PRIMARY KEY(employeeID),
+	FOREIGN KEY (studentID_Student) REFERENCES Student(studentID) ON DELETE SET NULL
+	FOREIGN KEY (websiteName_Website) REFERENCES Website(websiteName) ON DELETE SET NULL
+	FOREIGN KEY (courseID_Courses) REFERENCES Courses(courseID) ON DELETE SET NULL
+	FOREIGN KEY (fees_Courses) REFERENCES Courses(fees) ON DELETE SET NULL
+	FOREIGN KEY (tutorID_Tutor) REFERENCES Tutor(tutorID) ON DELETE SET NULL
+	FOREIGN KEY (salary_Tutor) REFERENCES Tutor(salary) ON DELETE SET NULL
+);
+
+-- Website Table
+CREATE TABLE Website
+ (
+	websiteName VARCHAR(300),
+	websiteURL VARCHAR(300),
+	PRIMARY KEY(websiteName)
+	FOREIGN KEY (courseID_Courses) REFERENCES Courses(courseID) ON DELETE SET NULL
+	FOREIGN KEY (location_Map) REFERENCES Map(location) ON DELETE SET NULL
+);
+
+-- Map Table
+CREATE TABLE Map
+(
+	locationID INT,
+	location VARCHAR(100),
+	PRIMARY KEY(locationID)
+);
+
